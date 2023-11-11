@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.laboratorio10.ui.theme.Laboratorio10Theme
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
@@ -60,7 +61,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         text = "Agregar",
         modifier = modifier
     )
-    
+
     TextField(value = variable, onValueChange = { variable = it })
 
     Button(onClick = {
@@ -82,20 +83,26 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun Test() {
     // Using remember to make the variable survive recompositions
-    var lista by remember { mutableStateOf(mutableListOf<Categories>()) }
+    var lista by remember { mutableStateOf(mutableListOf<Meal>()) }
+    val viewModel: CategoryViewModel = viewModel()
+    val lista2 = viewModel.categoriyList.value
 
-
-        // Inside LaunchedEffect to execute the code only once when the composable is initially composed
+    /*
+     LaunchedEffect(Unit) {
         GlobalScope.launch(Dispatchers.IO) {
-            val data = FirestoreRepository("Categories").getCategories()
+            val data = FirestoreRepository().getRecipeList("Beef")
             // Update the variable inside the correct coroutine scope
             withContext(Dispatchers.Main) {
                 lista = data
             }
         }
+    }
+
+     */
+
 
     LazyColumn {
-        items(lista) { item ->
+        items(lista2) { item ->
             Text(text = item.name)
         }
     }
